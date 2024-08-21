@@ -16,8 +16,10 @@ class EbimuDriver(Node):
         self.publisher = self.create_publisher(Imu, 'imu', 10)
         self.serial_port = serial.Serial('/dev/ttyIMU', 115200, timeout=1)  # 시리얼포트는 tty 고정해서 쓰면 좋아용
         self.timer = self.create_timer(0.01, self.timer_callback)  # 100Hz, 필요에 따라 조정
-        self.serial_port.write("<sof2>".encode()) # quaternion 모드로 설정
+        #self.serial_port.write("<sof2>".encode()) # quaternion 모드로 설정
         #self.serial_port.write("<sem0>".encode()) # 자기장 센서 끄고 싶을 때
+        
+        self.is_upside_down=True
 
     def timer_callback(self):
         try:
@@ -28,6 +30,16 @@ class EbimuDriver(Node):
                 if len(data) == 10:  # 예상되는 데이터 개수
                     qz, qy, qx, qw, gx, gy, gz, ax, ay, az = map(float, data)
                     
+                    if(self.is_upside_down==True):
+                        qw=-qw
+                        qy=-qy
+                        qz=-qz
+                        gy=-gy
+                        gz=-gz
+                        ay=-ay
+                        az=-az
+
+
                     imu_msg = Imu()
                     imu_msg.header.stamp = self.get_clock().now().to_msg()
                     imu_msg.header.frame_id = 'imu_link'
@@ -38,6 +50,8 @@ class EbimuDriver(Node):
                     
                     self.publisher.publish(imu_msg)
                     print("IMU data published: "+str(data))
+                else:
+                    print(f"data length is {len(data)}")
         except Exception as e:
             self.get_logger().error(f'Error reading from serial port: {str(e)}')
 

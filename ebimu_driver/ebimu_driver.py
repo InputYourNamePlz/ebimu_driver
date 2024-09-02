@@ -34,7 +34,10 @@ class EbimuDriver(Node):
 
 
     
-    def timer2_callback(self):        
+    def timer2_callback(self): 
+        qx = self.qx
+        gx = self.gx
+        ax = self.ax       
         if(self.is_upside_down==True):
             qw=-self.qw
             qy=-self.qy
@@ -43,6 +46,15 @@ class EbimuDriver(Node):
             gz=-self.gz
             ay=-self.ay
             az=-self.az
+        else:
+            qw=self.qw
+            qy=self.qy
+            qz=self.qz
+            gy=self.gy
+            gz=self.gz
+            ay=self.ay
+            az=self.az
+
             
         imu_msg = Imu()
         imu_msg.header.stamp = self.get_clock().now().to_msg()
@@ -53,7 +65,7 @@ class EbimuDriver(Node):
         imu_msg.linear_acceleration = Vector3(x=ax, y=ay, z=az)
         
         self.publisher.publish(imu_msg)
-        print("IMU data published: "+str(data))
+        print(f"IMU data published: {qx, qy, qz, qw, gx, gy, gz, ax, ay, az}")
 
     
     def timer_callback(self):

@@ -20,15 +20,15 @@ class EbimuDriver(Node):
         #self.serial_port.write("<sof2>".encode()) # quaternion 모드로 설정
         #self.serial_port.write("<sem0>".encode()) # 자기장 센서 끄고 싶을 때
 
-        qz=0.0
-        qy=0.0
-        qx=0.0
-        qw=0.0
-        gx=0.0
-        gy=0.0
-        ax=0.0
-        ay=0.0
-        az=0.0
+        self.qz=0.0
+        self.qy=0.0
+        self.qx=0.0
+        self.qw=0.0
+        self.gx=0.0
+        self.gy=0.0
+        self.ax=0.0
+        self.ay=0.0
+        self.az=0.0
         
         self.is_upside_down=True
 
